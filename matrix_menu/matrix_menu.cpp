@@ -6,9 +6,14 @@
 #include "iostream"
 #include "conio.h"
 
-
 using namespace std;
 
+bool menu(matrix&);
+void print_menu();
+bool switcher(matrix&, char);
+void print(matrix&);
+void add(matrix&);
+void _remove(matrix&);
 
 int main()
 {
@@ -18,7 +23,7 @@ int main()
     return 0;
 }
 
-bool menu(matrix matrix)
+bool menu(matrix& matrix)
 {
 	print_menu();
 	char ch = _getch();
@@ -27,34 +32,51 @@ bool menu(matrix matrix)
 	return true;
 }
 
-void print_menu()
+void print_menu() 
 {
-	cout << "Press:"
-		<< "1. to add a path"
-		<< "2. to remove a path"
-		<< "3. to find a path"
-		<< "4. to print all"
-		<< "5. to clear path list"
-		<< "6. to clear screen"
-		<< "ESC to exit";
+	cout << "Press:" << endl
+		<< "1. to add a path" << endl
+		<< "2. to remove a path" << endl
+		<< "3. to find a path" << endl
+		<< "4. to print all" << endl
+		<< "5. to clear path list" << endl
+		<< "6. to clear screen" << endl
+		<< "ESC to exit" << endl;
 }
 
-bool switcher(matrix matrix, char ch)
+bool switcher(matrix& matrix, char ch)
 {
 	switch (ch)
 	{
 	case'1': add(matrix); break;
 	case'2': _remove(matrix); break; //remove в си существует, удаляет файдпо имени
-	case'3': find(matrix); break;
+	//case'3': find(matrix); break;
 	case'4': print(matrix); break;
-	case'5': clear(matrix); break;
+	//case'5': clear(matrix); break;
 	case'6': system("cls"); break;
 	case 27: return false; break;
 	}
 	return true;
 }
 
-void add(matrix matrix)
+void print(matrix& matrix)
+{
+	if (matrix.is_empty())
+	{
+		cout << "empty" << endl;
+		return;
+	}
+	matrix::iterator i(matrix);
+	cout << "Paths:" << endl;
+	while (!i.is_NULL())
+	{
+		cout << "from " << i.get_sourse() << " to " << i.get_destination()
+			<< " with distance " << i.get_distance() << endl;
+		++i;
+	}
+}
+
+void add(matrix& matrix)
 {
 	char ch;
 	int srs, dest, dist;
@@ -69,26 +91,26 @@ void add(matrix matrix)
 		try 
 		{
 			matrix.add(srs, dest, dist);
-			cout << "\npath added";
+			cout << "path added" << endl;
 		}
 		catch (char* exc)
 		{
-			if (strcmp(exc, "существующий маршрут"))
-				cout << "path is already exist";
+			if (exc == "существующий маршрут")
+				cout << "path is already exist" << endl;
 			else throw exc;
 		}
-		cout << "add more? (y/n)";
+		cout << "add more? (y/n)" << endl;
 		do
 			ch = _getch();
-		while (ch != 'n' || ch != 'y');
+		while (ch != 'n' && ch != 'y');
 	} while (ch != 'n');
 }
 
-void _remove(matrix matrix)
+void _remove(matrix& matrix)
 {
 	if (matrix.is_empty())
 	{
-		cout << "empty";
+		cout << "empty" << endl;
 		return;
 	}
 	char ch;
@@ -104,21 +126,21 @@ void _remove(matrix matrix)
 		try
 		{
 			matrix.remove(srs, dst);
-			cout << "\npath removed";
+			cout << "path removed" << endl;
 		}
 		catch (char* exc)
 		{
-			if (strcmp(exc, "несуществующий маршрут"))
-				cout << "this path does not exist";
-			else if (strcmp(exc, "пустой список"))
+			if (exc == "несуществующий маршрут")
+				cout << "this path does not exist" << endl;
+			else if (exc == "пустой список")
 				/*уже предусмотрено*/;
 			else throw exc;
 		}
 
-		cout << "remove more? (y/n)";
+		cout << "remove more? (y/n)" << endl;
 		do
 			ch = _getch();
-		while (ch != 'n' || ch != 'y');
+		while (ch != 'n' && ch != 'y');
 	} while (ch != 'n');
 }
 
