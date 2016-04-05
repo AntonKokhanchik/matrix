@@ -9,6 +9,11 @@
 
 using namespace std;
 
+void add(matrix );
+void _remove(matrix);
+void find(matrix);
+void print(matrix);
+void  clear(matrix);
 
 int main()
 {
@@ -44,7 +49,7 @@ bool switcher(matrix matrix, char ch)
 	switch (ch)
 	{
 	case'1': add(matrix); break;
-	case'2': _remove(matrix); break; //remove в си существует, удаляет файдпо имени
+	case'2': _remove(matrix); break; //remove в си существует, удаляет файл по имени
 	case'3': find(matrix); break;
 	case'4': print(matrix); break;
 	case'5': clear(matrix); break;
@@ -122,3 +127,43 @@ void _remove(matrix matrix)
 	} while (ch != 'n');
 }
 
+void find(matrix matrix)
+{
+	char ch;
+	int srs, dest;
+	do
+	{
+		cout << "source-city (int number): ";
+		cin >> srs;
+		cout << "destination-sity (int number): ";
+		cin >> dest;
+
+		int result = matrix.find(srs, dest);
+		if (result != -1)
+			cout << "\npath from " << srs << "to" << dest << ":  " << result;
+		else
+			cout << "\this npath does not exist";
+
+		cout << "\nfind more? (y/n)";
+		do
+			ch = _getch();
+		while (ch != 'n' || ch != 'y');
+	} while (ch != 'n');
+}
+
+void print(matrix);
+
+void  clear(matrix matrix)
+{
+	char ch;
+	cout << "\nare you sure? (y/n)";
+
+	do
+		ch = _getch();
+	while (ch != 'n' || ch != 'y');
+
+	if(ch == 'y')
+		matrix.clear();
+	else 
+		return;
+}
