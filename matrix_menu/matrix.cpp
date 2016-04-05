@@ -42,26 +42,29 @@ void matrix::add(int ts, int td, int dist)
 {
 	if (is_empty())
 	{
-		mark* m_tmp = new mark();
-		m_tmp->next_row = NULL;
-		m_tmp->row = ts;
+		mark* m = new mark();
+		m->next_row = NULL;
+		m->row = ts;
 
-		node* n_tmp = new node();
-		n_tmp->col = td;
-		n_tmp->dist = dist;
-		n_tmp->next_col = NULL;
-		m_tmp->first_col = n_tmp;
+		node* n = new node();
+		n->col = td;
+		n->dist = dist;
+		n->next_col = NULL;
+		m->first_col = n;
 
-		first = m_tmp;
+		first = m;
 		return;
 	}
+
 	mark* r = r_find(ts);
-	mark* m;
+	mark* m = new mark;
+	m->row = ts;
 
 	if (r)
 	{
 		if (r->row == ts)
 		{
+			delete m;
 			m = r;
 			node* c = c_find(td, m);
 			if (c)
@@ -72,19 +75,20 @@ void matrix::add(int ts, int td, int dist)
 		}
 		else
 		{
-			m = new mark();
 			m->next_row = r->next_row;
 			r->next_row = m;
+			m->first_col = NULL;
 		}
 	}
 	else
 	{
 		m->next_row = first;
 		first = m;
+		m->first_col = NULL;
 	}
 
 	node* tmp = new node();
-	tmp->col = ts;
+	tmp->col = td;
 	tmp->dist = dist;
 
 	node* c = c_find(td, m);
@@ -107,7 +111,7 @@ matrix::mark* matrix::r_find(int i)
 	if (is_empty())
 		return NULL;
 	mark* tmp = first;
-	if (tmp->row >= i)
+	if (tmp->row > i)
 		return NULL;
 	while (tmp->next_row != NULL && tmp->next_row->row <= i)
 		tmp = tmp->next_row;
@@ -121,7 +125,7 @@ matrix::node* matrix::c_find(int i, mark* m)
 	if (!m || !m->first_col)
 		return NULL;
 	node* tmp = m->first_col;
-	if (tmp->col >= i)
+	if (tmp->col > i)
 		return NULL;
 	while (tmp->next_col != NULL && tmp->next_col->col <= i)
 		tmp = tmp->next_col;
@@ -170,7 +174,7 @@ void matrix::remove(int ts, int td)
 	}
 }
 
-// возвращает длину маршрута по входнымисточнику и еазначению
+// возвращает длину маршрута по входнымисточнику и назначению
 // -1 если маршрута нет
 int matrix::find(int s, int d)
 {
@@ -181,4 +185,60 @@ int matrix::find(int s, int d)
 	if (!col || col->col != d)
 		return -1;
 	return col->dist;
+}
+
+matrix::iterator::iterator(matrix& matrix)
+{
+	row = matrix.first;
+	column = row->first_col;
+}
+
+int matrix::iterator::get_sourse()
+{
+	if(row)
+		return row->row;
+	throw "обращение к NULL";
+}
+
+int matrix::iterator::get_destination()
+{
+	if(column)
+		return column->col;
+	throw "обращение к NULL";
+}
+
+int matrix::iterator::get_distance()
+{
+	if (column)
+		return column->dist;
+	throw "обращение к NULL";
+}
+
+bool matrix::iterator::is_NULL()
+{
+	if (row == NULL)
+		return true;
+	return false;
+}
+
+const matrix::iterator operator++(matrix::iterator& i)
+{
+	if (i.column->next_col)
+	{
+		i.column = i.column->next_col;
+		return i;
+	}
+	else
+		if (i.row->next_row)
+		{
+			i.row = i.row->next_row;
+			i.column = i.row->first_col;
+			return i;
+		}
+		else
+		{
+			i.row = NULL;
+			i.column = NULL;
+		}
+
 }
