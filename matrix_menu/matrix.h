@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 
 using namespace std;
 
@@ -34,5 +33,19 @@ public:
 	void add(int, int, int);
 	void remove(int, int);
 	int find(int, int);
+
+
+	class iterator
+	{
+		mark* row;
+		node* column;
+	public:
+		iterator(matrix&);
+		friend const iterator operator++(iterator&);
+		int get_sourse();
+		int get_destination();
+		int get_distance();
+		bool is_NULL();
+	};	
 };
 
