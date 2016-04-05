@@ -166,7 +166,7 @@ void find(matrix& matrix)
 		cout << "\nfind more? (y/n)";
 		do
 			ch = _getch();
-		while (ch != 'n' || ch != 'y');
+		while (ch != 'n' && ch != 'y');
 	} while (ch != 'n');
 }
 
@@ -177,7 +177,7 @@ void  clear(matrix& matrix)
 
 	do
 		ch = _getch();
-	while (ch != 'n' || ch != 'y');
+	while (ch != 'n' && ch != 'y');
 
 	if(ch == 'y')
 		matrix.clear();
